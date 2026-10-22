@@ -74,114 +74,100 @@
       ];
       const CAKE_VISUAL_WIDTH = 35;
 
-      function createCandles(count) {
-        cake.innerHTML = "";
-        const CANDLE_VISUAL_WIDTH = 2;
-        const availableWidth = CAKE_VISUAL_WIDTH;
-        const candlesPerRow = 6;
-        const rowCount = Math.ceil(count / candlesPerRow);
-        const shiftAmount = 4;
+      // function createCandles(count) {
+      //   cake.innerHTML = "";
+      //   const CANDLE_VISUAL_WIDTH = 2;
+      //   const availableWidth = CAKE_VISUAL_WIDTH;
+      //   const candlesPerRow = 6;
+      //   const rowCount = Math.ceil(count / candlesPerRow);
+      //   const shiftAmount = 4;
 
-        for (let i = 0; i < count; i++) {
-          const candle = document.createElement("div");
-          candle.classList.add("candle");
-          const colorClass = colors[Math.floor(Math.random() * colors.length)];
-          candle.classList.add(colorClass);
+      //   for (let i = 0; i < count; i++) {
+      //     const candle = document.createElement("div");
+      //     candle.classList.add("candle");
+      //     const colorClass = colors[Math.floor(Math.random() * colors.length)];
+      //     candle.classList.add(colorClass);
 
-          const row = Math.floor(i / candlesPerRow);
-          const col = i % candlesPerRow;
-          const totalCandlesInRow = Math.min(
-            candlesPerRow,
-            count - row * candlesPerRow
-          );
-          const rowSpacing = availableWidth / (totalCandlesInRow + 1);
+      //     const row = Math.floor(i / candlesPerRow);
+      //     const col = i % candlesPerRow;
+      //     const totalCandlesInRow = Math.min(
+      //       candlesPerRow,
+      //       count - row * candlesPerRow
+      //     );
+      //     const rowSpacing = availableWidth / (totalCandlesInRow + 1);
 
-          const leftBase = rowSpacing * (col + 1) - CANDLE_VISUAL_WIDTH / 2 + 5;
-          const rowShift = row % 2 === 0 ? 0 : shiftAmount;
+      //     const leftBase = rowSpacing * (col + 1) - CANDLE_VISUAL_WIDTH / 2 + 5;
+      //     const rowShift = row % 2 === 0 ? 0 : shiftAmount;
 
-          candle.style.position = "absolute";
-          candle.style.top = `${10 + row * 3}px`;
-          candle.style.left = `${leftBase - rowShift + 4}px`;
+      //     candle.style.position = "absolute";
+      //     candle.style.top = `${10 + row * 3}px`;
+      //     candle.style.left = `${leftBase - rowShift + 4}px`;
 
-          cake.appendChild(candle);
-        }
-      }
+      //     cake.appendChild(candle);
+      //   }
+      // }
 
-      createCandles(candleCount);
+      // createCandles(candleCount);
 
       // === Microphone / Blow Detection ===
       async function startMicDetection() {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-          });
-          const audioContext = new (window.AudioContext ||
-            window.webkitAudioContext)();
-          const source = audioContext.createMediaStreamSource(stream);
-          const analyser = audioContext.createAnalyser();
-          analyser.fftSize = 512;
+       const dataArray = new Uint8Array(analyser.fftSize);
 
-          source.connect(analyser);
+let blown = false;
+let blowFrames = 0;
 
-          const dataArray = new Uint8Array(analyser.frequencyBinCount);
+function detectBlow() {
+    analyser.getByteTimeDomainData(dataArray);
 
-          let blown = false;
+    let sum = 0;
 
-          function detectBlow() {
-            analyser.getByteFrequencyData(dataArray);
+    for (let i = 0; i < dataArray.length; i++) {
+        const deviation = dataArray[i] - 128;
+        sum += deviation * deviation;
+    }
 
-            let highFreqSum = 0;
-            let lowFreqSum = 0;
+    const rms = Math.sqrt(sum / dataArray.length);
 
-            const midpoint = dataArray.length / 2;
+    // Initial threshold; adjust after testing
+    const BLOW_THRESHOLD = 12;
 
-            for (let i = 0; i < dataArray.length; i++) {
-              if (i < midpoint) {
-                lowFreqSum += dataArray[i];
-              } else {
-                highFreqSum += dataArray[i];
-              }
-            }
+    if (rms > BLOW_THRESHOLD) {
+        blowFrames++;
+    } else {
+        blowFrames = 0;
+    }
 
-            const highAvg = highFreqSum / (dataArray.length / 2);
-            const lowAvg = lowFreqSum / (dataArray.length / 2);
+    // Require several consecutive frames above threshold
+    if (blowFrames >= 5 && !blown) {
+        blown = true;
+        blowOutCandles();
+    }
 
-            const ratio = highAvg / (lowAvg + 1);
+    requestAnimationFrame(detectBlow);
+}
 
-            const BLOW_RATIO_THRESHOLD = 0.5;
-
-            if (ratio > BLOW_RATIO_THRESHOLD && !blown) {
-              blown = true;
-              blowOutCandles();
-            }
-
-            requestAnimationFrame(detectBlow);
-          }
-
-          detectBlow();
-        } catch (err) {
-          console.error("Mic access error:", err);
-        }
+detectBlow();
       }
 
       function blowOutCandles() {
-        console.log("blowOutCandles was called!");
-        const cakeContainer = document.querySelector(".cake-container");
-        const subTitle = document.getElementById("subTitle");
+    const cakeContainer = document.querySelector(".cake-container");
+    const subTitle = document.getElementById("subTitle");
 
-        if (cakeContainer.classList.contains("cake-2-active")) {
-          return;
-        }
+    // Prevent switching more than once
+    if (cakeContainer.classList.contains("cake-2-active")) {
+        return;
+    }
 
-    // Switch from Cake 1 to Cake 2
-        cakeContainer.classList.add("cake-2-active");
+    // Switch Cake 1 to Cake 2
+    cakeContainer.classList.add("cake-2-active");
 
-        cakeContainer.onclick = null;
+    // Disable the manual click after switching
+    cakeContainer.onclick = null;
 
     // Update the birthday message
-        subTitle.textContent =
-          "YAYY TATAA ULANG TAHUNN!! Wishing you the happiest birthday ever!! 🎉";
-        }
+    subTitle.textContent =
+        "YAYY TATAA ULANG TAHUNN!! Wishing you the happiest birthday ever!! 🎉";
+}
 
       startMicDetection();
 
