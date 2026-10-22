@@ -12,6 +12,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="CAKE BLOWN OUT.css" />
+    <link rel="stylesheet" href="LETTER.css">
+    <link rel="stylesheet" href="MUSIC.css">
     <style>
       #mainTitle {
         font-size: 32px;
@@ -26,12 +28,27 @@
       }
     </style>
   </head>
+  
+  <audio id="bgm" autoplay loop>
+    <source src="after_blow.mp3" type="audio/mpeg">
+    Your browser does not support audio.
+  </audio>
+
   <body>
     <div class="container">
       <div id="birthdayText"></div>
       <div class="cake-container" onclick="blowOutCandles()">
         <div class="cake" id="cake"></div>
         <div class="cake_blown" id="cake2"></div>
+        <div class="letter closed-letter-art"></div>
+        <div class="music cassette-art"></div>
+
+        <img
+        class="open-letter-art"
+        src="LETTER.png"
+        alt="Open birthday letter"
+        />
+
       </div>
     </div>
 
@@ -163,10 +180,17 @@
 
     // Update the birthday message
         subTitle.textContent =
-          "Yayy! Wishing you the happiest birthday ever!! 🎉";
-}
+          "YAYY TATAA ULANG TAHUNN!! Wishing you the happiest birthday ever!! 🎉";
+        }
 
       startMicDetection();
+
+      const bgm = document.getElementById("bgm");
+      window.addEventListener("load", () => {
+        bgm.play().catch((error) => {
+          console.log("Autoplay was blocked by the browser:", error);
+        });
+      });
     </script>
   </body>
 </html>
