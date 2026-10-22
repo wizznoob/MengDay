@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Birthday Cake 🎂</title>
+    <title>HAPPY BIRTHDAY TATATA 🎂</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,6 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="CAKE BLOWN OUT.css" />
     <style>
       #mainTitle {
         font-size: 32px;
@@ -28,16 +29,17 @@
   <body>
     <div class="container">
       <div id="birthdayText"></div>
-      <div class="cake-container">
+      <div class="cake-container" onclick="blowOutCandles()">
         <div class="cake" id="cake"></div>
+        <div class="cake_blown" id="cake2"></div>
       </div>
     </div>
 
     <script>
       // Read URL params
       const params = new URLSearchParams(window.location.search);
-      const name = params.get("name") || "Friend";
-      let candleCount = parseInt(params.get("candles")) || 4;
+      const name = params.get("name") || "TATAAA";
+      let candleCount = parseInt(params.get("candles")) || 22;
       candleCount = Math.min(Math.max(candleCount, 1), 30);
 
       const birthdayText = document.getElementById("birthdayText");
@@ -147,24 +149,22 @@
       }
 
       function blowOutCandles() {
-        const candles = document.querySelectorAll(".candle");
-        candles.forEach((candle) => {
-          const delay = Math.random() * 1000;
-          setTimeout(() => {
-            colors.forEach((color) => {
-              if (candle.classList.contains(color)) {
-                candle.classList.add("blown");
-              }
-            });
-          }, delay);
-        });
+        const cakeContainer = document.querySelector(".cake-container");
+        const subTitle = document.getElementById("subTitle");
 
-        // Update subTitle after short delay
-        setTimeout(() => {
-          const subTitle = document.getElementById("subTitle");
-          subTitle.textContent = `Yayy! Wishing you the happiest birthday ever!! 🎉`;
-        }, 1200);
-      }
+        if (cakeContainer.classList.contains("cake-2-active")) {
+          return;
+        }
+
+    // Switch from Cake 1 to Cake 2
+        cakeContainer.classList.add("cake-2-active");
+
+        cakeContainer.onclick = null;
+
+    // Update the birthday message
+        subTitle.textContent =
+          "Yayy! Wishing you the happiest birthday ever!! 🎉";
+}
 
       startMicDetection();
     </script>
