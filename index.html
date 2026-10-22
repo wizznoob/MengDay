@@ -28,13 +28,12 @@
       }
     </style>
   </head>
-  
-  <audio id="bgm" autoplay loop>
-    <source src="after_blow.mp3" type="audio/mpeg">
-    Your browser does not support audio.
-  </audio>
 
   <body>
+    <audio id="bgm" autoplay loop preload="auto">
+      <source src="after_blow.mp3" type="audio/mpeg">
+      Your browser does not support audio.
+    </audio>
     <div class="container">
       <div id="birthdayText"></div>
       <div class="cake-container" onclick="blowOutCandles()">
@@ -186,11 +185,17 @@
       startMicDetection();
 
       const bgm = document.getElementById("bgm");
-      window.addEventListener("load", () => {
+      function startBGM() {
         bgm.play().catch((error) => {
-          console.log("Autoplay was blocked by the browser:", error);
+          console.log("Autoplay blocked:", error);
         });
-      });
+      }
+      startBGM();
+      document.addEventListener("pointerdown", () => {
+        if (bgm.paused) {
+          startBGM();
+        }
+      }, { once: true });
     </script>
   </body>
 </html>

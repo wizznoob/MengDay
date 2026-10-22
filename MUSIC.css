@@ -44,6 +44,37 @@
   z-index: 0;
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 12px;
+  }
+
+  .cake-container {
+    transform: scale(0.85);
+    transform-origin: top center;
+    margin-bottom: -60px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .container {
+    padding: 16px 8px;
+  }
+
+  #birthdayText {
+    margin-bottom: 10px;
+  }
+
+  .cake-container {
+    bottom: 100;
+    transform: scale(0.65);
+    transform-origin: top center;
+    margin-bottom: -40px;
+  }
+
+}
+
 .music {
   position: absolute;
   animation: music 2s infinite;
