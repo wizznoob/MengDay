@@ -2,6 +2,7 @@
     font-family: "Pixelify Sans", sans-serif;
     background-color: #feefe5;
     box-sizing: border-box;
+}
 
 *,
 *::before,
@@ -14,7 +15,6 @@ html {
     min-height: 100%;
 }
 
-}
 body {
   margin: 0;
   padding: 24px 12px;
